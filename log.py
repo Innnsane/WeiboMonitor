@@ -5,6 +5,7 @@ from loguru import logger as logger_
 
 logger = logger_
 
+
 class Filter:
 
     def __init__(self) -> None:

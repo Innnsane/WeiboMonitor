@@ -10,13 +10,13 @@ from dotenv import dotenv_values
 from apscheduler.schedulers.blocking import BlockingScheduler
 from log import LoguruHandler
 
-
 aps_logger = logging.getLogger("apscheduler")
 aps_logger.setLevel(logging.DEBUG)
 aps_logger.handlers.clear()
 aps_logger.addHandler(LoguruHandler())
 
 scheduler = BlockingScheduler()
+
 
 def save_pushed(pushed):
     locked = list(pushed) + get_pushed()
@@ -153,6 +153,7 @@ def main():
             updates[id_] = dict_remote[id_]
         push_update(updates)
     save_pushed(new_ids)
+
 
 C = dotenv_values(".env")
 
