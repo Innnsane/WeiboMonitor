@@ -97,7 +97,6 @@ def fetch_user_mblog(uid):
             soup = BeautifulSoup(raw_text, "lxml")
             id_ = card["mblog"]["id"]
             is_top = card["mblog"].get("isTop", 0)
-            edit_at = card["mblog"].get("edit_at", False)
             created_at = card["mblog"]["created_at"]
 
             dict_remote[id_] = {
@@ -108,7 +107,6 @@ def fetch_user_mblog(uid):
                 "images": card["mblog"].get("pics", []),
                 "info": card["mblog"].get("page_info", {}),
                 "isTop": is_top,
-                "edit_at": getUnixFromJS(edit_at) if edit_at else 0,
                 "created_at": getUnixFromJS(created_at),
             }
 
