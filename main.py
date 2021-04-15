@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from utils import getUnixFromJS
 from dotenv import dotenv_values
 from apscheduler.schedulers.blocking import BlockingScheduler
-from log import LoguruHandler
+from log import LoguruHandler, logger
 
 aps_logger = logging.getLogger("apscheduler")
 aps_logger.setLevel(logging.DEBUG)
@@ -19,9 +19,8 @@ scheduler = BlockingScheduler()
 
 
 def save_pushed(pushed):
-    locked = list(pushed) + get_pushed()
     with open("./push.lock", "w") as f:
-        return json.dump(list(set(locked)), f)
+        return json.dump(list(set(pushed)), f)
 
 
 def get_pushed():
@@ -144,15 +143,18 @@ def main():
         new_ids = differ(dict_local, dict_remote)
         save_data(uid, dict_remote)
         if len(new_ids) == 0:
+            pushed += list(dict_remote.keys())
             continue
         updates = {"token": C["API_TOKEN"]}
         for id_ in new_ids:
             if id_ in pushed:
-                print(f"已推送过的id：{id_}")
+                logger.warning(f"已推送过的id：{id_}")
                 continue
             updates[id_] = dict_remote[id_]
-        push_update(updates)
-    save_pushed(new_ids)
+        if len(updates.keys()) != 0:
+            push_update(updates)
+            pushed += list(new_ids)
+    save_pushed(list(pushed))
 
 
 C = dotenv_values(".env")
