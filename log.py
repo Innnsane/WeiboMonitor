@@ -42,8 +42,10 @@ default_format = (
     "<c><u>{name}</u></c> | "
     # "<c>{function}:{line}</c>| "
     "{message}")
-logger_id = logger.add(sys.stdout,
-                       colorize=False,
-                       diagnose=False,
-                       filter=default_filter,
-                       format=default_format)
+logger_id = logger.add(
+    sys.stdout,
+    colorize=False,
+    diagnose=False,
+    filter=default_filter,
+    format=default_format,
+)
