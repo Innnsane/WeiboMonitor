@@ -151,7 +151,9 @@ def main():
                 logger.warning(f"已推送过的id：{id_}")
                 continue
             updates[id_] = dict_remote[id_]
-        if len(list(updates.keys()).remove("token")) != 0:
+        temp_list = list(updates.keys())
+        temp_list.remove("token")
+        if len(temp_list) != 0:
             push_update(updates)
             pushed += list(new_ids)
     save_pushed(list(pushed))
