@@ -135,27 +135,29 @@ def differ(local, remote):
 def main():
     list_uid = C["WATCHLIST"].split(",")
     pushed = get_pushed()
+
     for uid in list_uid:
         dict_remote = fetch_user_mblog(uid)
         dict_local = read_local(uid)
+
         if len(dict_remote.keys()) == 0 or len(dict_local.keys()) == 0:
             raise RuntimeError("Local or remote cannot be empty.")
+
         new_ids = differ(dict_local, dict_remote)
         save_data(uid, dict_remote)
-        if len(new_ids) == 0:
-            pushed += list(dict_remote.keys())
-            continue
         updates = {"token": C["API_TOKEN"]}
-        for id_ in new_ids:
-            if id_ in pushed:
-                logger.warning(f"已推送过的id：{id_}")
-                continue
-            updates[id_] = dict_remote[id_]
-        temp_list = list(updates.keys())
-        temp_list.remove("token")
-        if len(temp_list) != 0:
+        if len(new_ids) != 0:
+            for id_ in new_ids:
+                if id_ in pushed:
+                    logger.warning(f"已推送过的id：{id_}")
+                    continue
+                updates[id_] = dict_remote[id_]
             push_update(updates)
             pushed += list(new_ids)
+        else:
+            pushed += list(dict_remote.keys())
+            continue
+
     save_pushed(list(pushed))
 
 
