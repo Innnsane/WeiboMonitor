@@ -1,12 +1,9 @@
 import requests
 import ujson as json
-import logging
-import os
 import sys
 
 from bs4 import BeautifulSoup
 from utils import getUnixFromJS
-from dotenv import dotenv_values
 
 
 def get_page(uid, containers, type_, idx):
@@ -86,21 +83,10 @@ def save_data(uid, dict_remote):
         json.dump(dict_remote, f, ensure_ascii=False, indent=4)
 
 
-def read_local(uid):
-    with open(f"./data/{uid}.json") as f:
-        dict_local = json.load(f)
-    return dict_local
-
-
-def differ(local, remote):
-    return set(remote.keys()).difference(set(local.keys()))
-
-
 def main(uid):
     dict_remote = fetch_user_mblog(uid)
     save_data(uid, dict_remote)
 
 
 if __name__ == "__main__":
-    C = dotenv_values(".env")
     main(sys.argv[1])
